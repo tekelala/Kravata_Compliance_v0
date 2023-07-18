@@ -38,25 +38,28 @@ def chat_page():
 
     # Initialize chat history in the session state
     if "chat_history" not in st.session_state:
-        st.session_state.chat_history = ""
+        st.session_state.chat_history = []
 
-    # User input field and 'Send' button
-    user_input = st.text_input('Type your message:')
-    if st.button('Send'):
-        # Append user input to chat history
-        st.session_state.chat_history += f"You: {user_input}\n"
+    # Creativity level
+    creativity_level = 0
 
-        # Creativity level
-        creativity_level = 0
+    # User input field
+    with st.form(key='chat_form'):
+        user_input = st.text_input('Type your message:')
+        submit_button = st.form_submit_button('Send')
 
-        # Generate Claude's response
-        response = create_text(user_input, creativity_level)
-
-        # Append Claude's response to chat history
-        st.session_state.chat_history += f"Claude: {response}\n"
+        if submit_button and user_input:
+            # Append user input to chat history
+            st.session_state.chat_history.append({"role": "user", "content": user_input})
+            # Generate Claude's response
+            response = create_text(user_input, creativity_level)
+            # Append Claude's response to chat history
+            st.session_state.chat_history.append({"role": "assistant", "content": response})
 
     # Display the chat history
-    st.text_area("Chat History:", value=st.session_state.chat_history, height=200, max_chars=None, key=None)
+    for message in st.session_state.chat_history:
+        with st.chat_message(message["role"]):
+            st.write(message["content"])
 
 # Running the chat_page function
 chat_page()
