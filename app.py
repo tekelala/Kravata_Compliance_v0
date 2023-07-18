@@ -40,6 +40,10 @@ def chat_page():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
+    # Initialize last assistant message in the session state
+    if "last_assistant_message" not in st.session_state:
+        st.session_state.last_assistant_message = ""
+
     # Creativity level
     creativity_level = 0
 
@@ -51,10 +55,16 @@ def chat_page():
         if submit_button and user_input:
             # Append user input to chat history
             st.session_state.chat_history.append({"role": "user", "content": user_input})
-            # Generate Claude's response
-            response = create_text(user_input, creativity_level)
-            # Append Claude's response to chat history
-            st.session_state.chat_history.append({"role": "assistant", "content": response})
+
+            with st.spinner('The assistant is thinking...'):
+                # Generate Claude's response
+                response = create_text(user_input, creativity_level)
+
+                # Update the last assistant message in the session state
+                st.session_state.last_assistant_message = response
+
+                # Append Claude's response to chat history
+                st.session_state.chat_history.append({"role": "assistant", "content": response})
 
     # Display the chat history
     for message in st.session_state.chat_history:
