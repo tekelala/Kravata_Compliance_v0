@@ -34,7 +34,7 @@ def create_text(prompt, temperature):
 
 # Chat page
 def chat_page():
-    st.title('Chat with Claude')
+    st.title('Una IA para Compliance de Kravata')
 
     # Initialize chat history in the session state
     if "chat_history" not in st.session_state:
