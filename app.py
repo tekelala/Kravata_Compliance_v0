@@ -3,7 +3,7 @@ import requests
 import json
 
 # Function to create text using the Claude API
-def create_text(chat_history, temperature, max_tokens=4096):
+def create_text(prompt, temperature):
     api_url = "https://api.anthropic.com/v1/complete"
     headers = {
         "Content-Type": "application/json",
@@ -11,10 +11,7 @@ def create_text(chat_history, temperature, max_tokens=4096):
     }
 
     # Prepare the prompt for Claude
-    conversation = "\n".join(f'{m["role"]}: {m["content"]}' for m in chat_history)
-
-    # Truncate the conversation to the last `max_tokens` tokens
-    conversation = conversation[-max_tokens:]
+    conversation = f"Human: {prompt}\n\nAssistant:"
 
     # Define the body of the request
     body = {
@@ -62,13 +59,13 @@ def chat_page():
 
             with st.spinner('The Kravata Compliance AI is working...'):
                 # Generate Claude's response
-                response = create_text(st.session_state.chat_history, creativity_level)
+                response = create_text(user_input, creativity_level)
 
                 # Append Claude's response to chat history
                 st.session_state.chat_history.append({"role": "assistant", "content": response})
 
-            # Clear the user input after the form is submitted
-            user_input = ""
+            # Rerun the script to update the chat history display
+            st.experimental_rerun()
 
 # Running the chat_page function
 chat_page()
