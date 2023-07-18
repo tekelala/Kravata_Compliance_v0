@@ -67,8 +67,8 @@ def chat_page():
                 # Append Claude's response to chat history
                 st.session_state.chat_history.append({"role": "assistant", "content": response})
 
-    # Clear the user input after the form is submitted
-    st.form(clear_on_submit=True)
+            # Clear the user input after the form is submitted
+            user_input = ""
 
 # Running the chat_page function
 chat_page()
